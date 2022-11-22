@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+
+			#info {
+				position: absolute;
+				top: 50%;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+				color: white;
+				font-size: 50px;
+				font-family: monospace;
+			}
+
+		</style>
+		
+		<link rel="stylesheet" media="screen" href="style.css">
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div id="particles-js"></div>
+		<script src="particles.js-master/particles.js"></script>
+		<script src="particles.js-master/demo/js/app.js"></script>
+
+		<script type="module">
+			// 引入three
+			import * as THREE from 'https://cdn.skypack.dev/three@0.130.0';
+
+			// 滑鼠控制
+			import { OrbitControls } from 'https://cdn.skypack.dev/three@0.130.0/examples/jsm/controls/OrbitControls.js';
+
+
+			// // 建立場景
+			const scene = new THREE.Scene();
+
+			scene.background = null;
+	
+			// 建立相機： 角度視角視野（fov, field of view） , 畫面寬高比（aspect） , 近面距離（near） , 遠面距離 (far)
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+			// 建立渲染器
+			const renderer = new THREE.WebGLRenderer();
+			// 場景大小設定成瀏覽器的寬度跟高度
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			
+			// 預設背景顏色	
+			// renderer.setClearColor(0xeeeeee, 1.0) 
+
+			// 陰影效果
+			renderer.shadowMap.enable = true
+
+			// 建立光源
+			let pointLight = new THREE.PointLight(0xffffff)
+			pointLight.position.set(10, 10, -10)
+			scene.add(pointLight)
+
+			
+			// 丟到網頁
+			document.body.appendChild( renderer.domElement );
+
+			// 滑鼠控制
+			const controls = new OrbitControls(camera, renderer.domElement);
+			controls.update();
+			// controls.enableZoom = true; //啟用縮放
+			// controls.enableDamping = true; // 啟用阻尼效果
+			// controls.dampingFactor = 0.25; // 阻尼系數
+			// controls.autoRotate = true; //啟用自動旋轉
+
+			// 建立物體幾何：創ㄧ個球體
+			// const geometry = new THREE.SphereGeometry(1, 32, 32);
+			// 建立物體幾何：創ㄧ個正方體
+			const geometry = new THREE.SphereGeometry(1,1,1);
+
+			// 讀取材質
+			const textureLoader = new THREE.TextureLoader();
+			// 宣告材質
+			const texture = textureLoader.load('https://i.epochtimes.com/assets/uploads/2017/02/star-450x338.jpg')
+			// 材料：顏色
+			const material = new THREE.MeshBasicMaterial( { map:texture } );
+			// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+			
+			// 宣告變量塞進去
+			const cube = new THREE.Mesh( geometry, material );
+			// 場景加入球體
+			scene.add( cube );
+
+			// 座標位置
+			camera.position.z = 5;
+
+			//對球體進行動畫
+			function animate() {
+				// 每秒加0.01
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+				requestAnimationFrame( animate );
+				// 滑鼠控制
+				controls.update();
+				// 渲染場景
+				renderer.render( scene, camera );
+			}
+
+			animate();
+		</script>
+		<div id="info" style="font-family: Permanent Marker"> Eighteen Video Production </div>
+
+	</body>
+</html>
